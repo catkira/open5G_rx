@@ -151,17 +151,33 @@ def test_stream(IN_DW):
     parameters_dirname = parameters.copy()
 
     sim_build='sim_build/test_stream' + '_'.join(('{}={}'.format(*i) for i in parameters_dirname.items()))
-    cocotb_test.simulator.run(
-        python_search=[tests_dir],
-        verilog_sources=verilog_sources,
-        includes=includes,
-        toplevel=toplevel,
-        module=module,
-        parameters=parameters,
-        sim_build=sim_build,
-        testcase='stream_tb',
-        force_compile=True
-    )
+
+    os.environ['SIM'] = 'verilator'
+    if os.environ['SIM'] == 'verilator':
+        cocotb_test.simulator.run(
+            python_search=[tests_dir],
+            verilog_sources=verilog_sources,
+            includes=includes,
+            toplevel=toplevel,
+            module=module,
+            parameters=parameters,
+            sim_build=sim_build,
+            testcase='stream_tb',
+            force_compile=True,
+            compile_args = ['-Wno-fatal']
+        )
+    else:
+        cocotb_test.simulator.run(
+            python_search=[tests_dir],
+            verilog_sources=verilog_sources,
+            includes=includes,
+            toplevel=toplevel,
+            module=module,
+            parameters=parameters,
+            sim_build=sim_build,
+            testcase='stream_tb',
+            force_compile=True
+        )
 
 if __name__ == '__main__':
     test_stream(IN_DW = 32)
