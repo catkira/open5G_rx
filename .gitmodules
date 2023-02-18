@@ -13,3 +13,6 @@
 [submodule "submodules/complex_multiplier"]
 	path = submodules/complex_multiplier
 	url = https://github.com/catkira/complex_multiplier.git
+[submodule "submodules/verilator-unisims"]
+	path = submodules/verilator-unisims
+	url = https://github.com/catkira/verilator-unisims.git

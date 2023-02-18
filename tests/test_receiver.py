@@ -261,8 +261,8 @@ def test(IN_DW, OUT_DW, TAP_DW, ALGO, WINDOW_LEN, CFO, CP_ADVANCE):
         os.path.join(rtl_dir, 'FFT/delay/int_delay_line.v'),
         os.path.join(rtl_dir, 'FFT/buffers/inbuf_half_path.v'),
         os.path.join(rtl_dir, 'FFT/buffers/outbuf_half_path.v'),
-        os.path.join(rtl_dir, 'FFT/buffers/int_bitrev_order.v'),
-        os.path.join(rtl_dir, '../submodules/FFT/submodules/XilinxUnisimLibrary/verilog/src/glbl.v')
+        os.path.join(rtl_dir, 'FFT/buffers/int_bitrev_order.v')
+        #os.path.join(rtl_dir, '../submodules/FFT/submodules/XilinxUnisimLibrary/verilog/src/glbl.v')
     ]
     includes = [
         os.path.join(rtl_dir, 'CIC'),
@@ -297,19 +297,35 @@ def test(IN_DW, OUT_DW, TAP_DW, ALGO, WINDOW_LEN, CFO, CP_ADVANCE):
     extra_env = {f'PARAM_{k}': str(v) for k, v in parameters.items()}
     
     sim_build='sim_build/' + '_'.join(('{}={}'.format(*i) for i in parameters_dirname.items()))
-    cocotb_test.simulator.run(
-        python_search=[tests_dir],
-        verilog_sources=verilog_sources,
-        includes=includes,
-        toplevel=toplevel,
-        module=module,
-        parameters=parameters,
-        sim_build=sim_build,
-        extra_env=extra_env,
-        testcase='simple_test',
-        force_compile=True,
-        compile_args = ['-sglbl', '-y' + unisim_dir]
-    )
+    os.environ['SIM'] = 'verilator'
+    if os.environ['SIM'] == 'verilator':
+        cocotb_test.simulator.run(
+            python_search=[tests_dir],
+            verilog_sources=verilog_sources,
+            includes=includes,
+            toplevel=toplevel,
+            module=module,
+            parameters=parameters,
+            sim_build=sim_build,
+            extra_env=extra_env,
+            testcase='simple_test',
+            force_compile=True,
+            compile_args = ['-Wno-fatal', '-y', '/mnt/d/git/5G_SSB_sync/submodules/verilator-unisims']
+        )
+    else:
+        cocotb_test.simulator.run(
+            python_search=[tests_dir],
+            verilog_sources=verilog_sources,
+            includes=includes,
+            toplevel=toplevel,
+            module=module,
+            parameters=parameters,
+            sim_build=sim_build,
+            extra_env=extra_env,
+            testcase='simple_test',
+            force_compile=True,
+            compile_args = ['-sglbl', '-y' + unisim_dir]
+        )
 
 if __name__ == '__main__':
     os.environ['PLOTS'] = "1"

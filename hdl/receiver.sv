@@ -1,19 +1,25 @@
 `timescale 1ns / 1ns
 
+`ifdef VERILATOR  // make parameter readable from VPI
+  `define VL_RD /*verilator public_flat_rd*/
+`else
+  `define VL_RD
+`endif
+
 module receiver
 #(
-    parameter IN_DW = 32,           // input data width
-    parameter OUT_DW = 32,          // correlator output data width
-    parameter TAP_DW = 32,
-    parameter PSS_LEN = 128,
-    parameter [TAP_DW * PSS_LEN - 1 : 0] PSS_LOCAL_0 = {(PSS_LEN * TAP_DW){1'b0}},
-    parameter [TAP_DW * PSS_LEN - 1 : 0] PSS_LOCAL_1 = {(PSS_LEN * TAP_DW){1'b0}},
-    parameter [TAP_DW * PSS_LEN - 1 : 0] PSS_LOCAL_2 = {(PSS_LEN * TAP_DW){1'b0}},
-    parameter ALGO = 1,
-    parameter WINDOW_LEN = 8,
-    parameter CP_ADVANCE = 9,
-    localparam FFT_OUT_DW = 32,
-    localparam N_id_1_MAX = 335
+    parameter IN_DW `VL_RD = 32,           // input data width
+    parameter OUT_DW `VL_RD = 32,          // correlator output data width
+    parameter TAP_DW `VL_RD = 32,
+    parameter PSS_LEN `VL_RD = 128,
+    parameter [TAP_DW * PSS_LEN - 1 : 0] PSS_LOCAL_0 `VL_RD = {(PSS_LEN * TAP_DW){1'b0}},
+    parameter [TAP_DW * PSS_LEN - 1 : 0] PSS_LOCAL_1 `VL_RD = {(PSS_LEN * TAP_DW){1'b0}},
+    parameter [TAP_DW * PSS_LEN - 1 : 0] PSS_LOCAL_2 `VL_RD = {(PSS_LEN * TAP_DW){1'b0}},
+    parameter ALGO `VL_RD = 1,
+    parameter WINDOW_LEN `VL_RD = 8,
+    parameter CP_ADVANCE `VL_RD = 9,
+    localparam FFT_OUT_DW `VL_RD = 32,
+    localparam N_id_1_MAX `VL_RD = 335
 )
 (
     input                                           clk_i,
